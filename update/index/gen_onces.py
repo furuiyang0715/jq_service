@@ -6,11 +6,18 @@ import pymysql
 import datetime
 
 from pymongo import MongoClient
-from logbook import Logger, StreamHandler
+from logbook import Logger, StreamHandler, TimedRotatingFileHandler
 
-StreamHandler(sys.stdout).push_application()
+stream_log = StreamHandler(sys.stdout)
+stream_log.push_application()
 
+log_file = TimedRotatingFileHandler(os.path.join(os.getcwd(), "index.log"), backup_count=3)
 logger = Logger('Logbook')
+
+logger.handlers = []
+# logger.handlers.append(log_file)
+logger.handlers.append(stream_log)
+
 env = os.environ.get
 
 stock_format = [r'^[SI][ZHX]\d{6}$',
