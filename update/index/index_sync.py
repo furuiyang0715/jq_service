@@ -124,6 +124,14 @@ class IndexSync:
         return ret_dict
 
     def daily_sync(self):
+
+        import time
+        while True:
+            logger.info("正在更新指数数据")
+            time.sleep(3)
+        import sys
+        sys.exit(0)
+
         mysql_con = DC()
         coll = gen_index_coll()
         inner_code_map = self.generate_index_code(mysql_con)
@@ -149,7 +157,3 @@ class IndexSync:
             date: {self.check_date} \n
             index: {front_index_code} \n
             index_info: {index_secucode_weight_dict}""")
-
-
-if __name__ == "__main__":
-    IndexSync().daily_sync()
