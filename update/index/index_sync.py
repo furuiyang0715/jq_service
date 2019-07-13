@@ -1,22 +1,10 @@
 import datetime
-import os
-import sys
 
 from update import utils
 from update.utils import DC, gen_index_coll
 
-
-from logbook import Logger, StreamHandler, TimedRotatingFileHandler
-
-stream_log = StreamHandler(sys.stdout)
-stream_log.push_application()
-
-log_file = TimedRotatingFileHandler(os.path.join(os.getcwd(), "index.log"), backup_count=3)
-logger = Logger('Logbook')
-
-logger.handlers = []
-# logger.handlers.append(log_file)
-logger.handlers.append(stream_log)
+import logging
+logger = logging.getLogger("index_log")
 
 
 class IndexSync:

@@ -1,39 +1,33 @@
-import sys
+import datetime
+import logging
+from raven import Client
 
-from logbook import Logger, StreamHandler
-StreamHandler(sys.stdout).push_application()
+from update.index.index_sync import IndexSync
 
-logger = Logger('Logbook')
+sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
+
+logger = logging.getLogger("main_log")
 
 
-def calendars_update():
-    logger.info("开始更新交易日历")
+def calendars_inc():
+
     pass
 
 
-def index_update():
-    logger.info("开始更新指数数据")
+def calendars_detection():
+
     pass
 
 
 def finance_update():
-    logger.info("开始更新金融数据")
+
     pass
 
 
-def update():
-    # 主程序
-
-    # 对于交易日历数据的更新
-    calendars_update()
-
-    # 对于 index 数据的更新
-    index_update()
-
-    # 对于金融数据的更新
-    finance_update()
-
-
-if __name__ == "__main__":
-    update()
-    pass
+def index_update():
+    logger.info(f"现在是 {datetime.datetime.today()}, 开始更新 index 数据。")
+    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始更新 index 数据。")
+    try:
+        IndexSync().daily_sync()
+    except Exception:
+        sentry.captureException(exc_info=True)
