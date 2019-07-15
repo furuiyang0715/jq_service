@@ -1,0 +1,21 @@
+FROM registry.cn-shenzhen.aliyuncs.com/jzdev/tinibase:1.0.0
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN mkdir /JQfuturesUpdate
+
+WORKDIR /JQfuturesUpdate
+
+ADD . /JQfuturesUpdate
+
+USER root
+WORKDIR /JQfuturesUpdate/submodules/JZquantCTPApi
+RUN bash install_depend.sh && python setup.py bdist_wheel && pip install dist/*
+
+WORKDIR /JQfuturesUpdate/submodules/JZpyapi
+RUN pip install -i https://pypi.douban.com/simple .
+
+WORKDIR /JQfuturesUpdate
+RUN pip install -r requirements.txt -i https://pypi.douban.com/simple
