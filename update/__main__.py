@@ -74,6 +74,14 @@ logging.config.dictConfig({
             "when": "D",
             "backupCount": 5
         },
+        "detection_file_log": {
+            "level": "DEBUG",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(os.getcwd(), "logs/calendars/detection.log"),
+            "formatter": "simple",
+            "when": "D",
+            "backupCount": 5
+        }
     },
     "loggers": {
         "main_log": {
@@ -91,7 +99,11 @@ logging.config.dictConfig({
         "inc_log": {
             "level": "DEBUG",
             "handlers": ["console", "inc_file_log"]
-        }
+        },
+        "detection_log": {
+            "level": "DEBUG",
+            "handlers": ["console", "detection_file_log"]
+        },
     }
 })
 

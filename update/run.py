@@ -1,6 +1,7 @@
 import datetime
 import logging
 # from raven import Client
+from update.calendars.detection import task
 from update.calendars.inc_sync import inc_update
 from update.finance.base_sync import BaseFinanceSync
 from update.index.index_sync import IndexSync
@@ -23,7 +24,7 @@ def calendars_inc():
 def calendars_detection():
     logger.info(f"现在是 {datetime.datetime.today()}, 开始检测拉取更新 calendars 数据")
     try:
-        # detection()
+        task()
         pass
     except Exception:
         sentry.captureException(exc_info=True)
