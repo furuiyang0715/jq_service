@@ -12,12 +12,12 @@ MYSQL_PASSWORD = env("MYSQL_PASSWORD", "password")
 
 MYSQL_DB = env("MYSQL_DB", "datacenter")
 
-MONGO_URL = env("MONGO_URL", "mongodb://127.0.0.1:27017")
+MONGO_URL = env("MONGO_URL", "mongodb://127.0.0.1:27137")
 
-MONGO_URL_JQData = env("MONGO_URL_JQData", "mongodb://127.0.0.1:27017")
+MONGO_URL_JQData = env("MONGO_URL_JQData", "mongodb://127.0.0.1:27137")
 # MONGO_URL_JQData = env("MONGO_URL_JQData", "mongodb://127.0.0.1:27017/JQdata?connect=false")
 
-MONGO_URL_STOCK = env("MONGO_URL_STOCK", "mongodb://127.0.0.1:27017")
+MONGO_URL_STOCK = env("MONGO_URL_STOCK", "mongodb://127.0.0.1:27137")
 # MONGO_URL_STOCK = env("MONGO_URL_STOCK", "mongodb://127.0.0.1:27017/stock?connect=false")
 
 # mongo 数据存在两个数据库中 一个是"JQdata" 一个是 "stock"
