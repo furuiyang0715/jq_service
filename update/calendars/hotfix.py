@@ -108,7 +108,7 @@ def check_mongo_diff(code, single_sus, ALREADYCHECK=False, DEL=False):
 
 
 @log_method_time_usage
-def inc():
+def hot_inc():
     end_time = utils.gen_limit_date()
     timestamp = datetime.datetime.now()
     market_start = utils.market_first_day()
@@ -131,4 +131,4 @@ def inc():
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-    inc()
+    hot_inc()

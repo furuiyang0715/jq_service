@@ -1,35 +1,39 @@
 import os
+import threading
 import time
 import logging.config
 import schedule
 
+from update.calendars.hotfix import hot_inc
 from update.run import index_update, finance_update, calendars_inc, calendars_detection
+
+
+def run_threaded(job_func):
+    """确保任务能在线程中运行完毕"""
+    job_thread = threading.Thread(target=job_func)
+    job_thread.start()
 
 
 def run():
     # 生产者
-
-    # print("into")
-
-    # schedule.every(30).days.do(index_update)
-    # schedule.every(5).days.do(finance_update)
-    # schedule.every().day.at("02:00").do(calendars_inc)
-    schedule.every().minute.do(calendars_detection)
+    schedule.every(30).days.do(run_threaded, index_update)
+    schedule.every(5).days.do(run_threaded, finance_update)
+    schedule.every().day.at("02:00").do(run_threaded, calendars_inc)
+    schedule.every(3).seconds.do(run_threaded, calendars_detection)
 
     # 开始调度任务之前执行第一次
-    # index_update()
-    # finance_update()
-    # calendars_inc()
-    # calendars_detection()
+    index_update()
+    finance_update()
+    calendars_inc()
+
+    # 在执行之前进行热修复
+    hot_inc()
 
     while True:
         # 消费者
-        # print("1------>", time.time())
-        # print(schedule.jobs)
         logger.info(schedule.jobs)
         schedule.run_pending()
-        # print("2------>", time.time())
-        time.sleep(300)
+        time.sleep(30)
 
 
 # 模块日志配置
@@ -123,7 +127,3 @@ logging.config.dictConfig({
 
 
 logger = logging.getLogger("main_log")
-
-
-# run()
-# print(os.getcwd())
