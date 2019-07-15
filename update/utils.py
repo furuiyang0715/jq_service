@@ -17,8 +17,11 @@ from update.sconfig import (MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, 
 
 import re
 from update.calendars import all_codes
+from raven import Client
 
 logger = logging.getLogger()
+
+sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
 
 
 stock_format = [r'^[SI][ZHX]\d{6}$',
@@ -264,6 +267,33 @@ def gen_finance_sync_tables():
         "comcn_dividend",  # 分红
         "comcn_sharestru",  # 股本
     ]
+
+
+# def yyyymmdd_date(dt: datetime) -> int:
+#     return dt.year * 10 ** 4 + dt.month * 10 ** 2 + dt.day
+# def code_convert(code):
+#     if code[0] == "0" or code[0] == "3":
+#         return "SZ" + code
+#     elif code[0] == "6":
+#         return "SH" + code
+#     else:
+#         logger.warning(f"wrong code: {code}")
+#         sys.exit(1)
+
+
+def inc_insert(code, day, ok):
+    # MongoUri = myconfig.get("MONGO_URL", "mongodb://172.17.0.1:27017")
+    # db = pymongo.MongoClient(MongoUri)
+    #
+    # coll_name = myconfig.get("MONGO_DBNAME", "stock")
+    # cld = db[coll_name]["calendar"]
+
+    cld = gen_calendars_coll()
+    data = {"code": code_convert(code),
+            "date": day,
+            "date_int": yyyymmdd_date(day),
+            "ok": ok}
+    cld.insert_one(data)
 
 
 def bulk_insert(cld, code, suspended, start, end):

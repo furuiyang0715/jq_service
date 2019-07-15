@@ -1,23 +1,32 @@
 import datetime
 import logging
-from raven import Client
-
+# from raven import Client
+from update.calendars.inc_sync import inc_update
 from update.finance.base_sync import BaseFinanceSync
 from update.index.index_sync import IndexSync
 
-sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
+# sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
+from update.utils import sentry
 
 logger = logging.getLogger("main_log")
 
 
 def calendars_inc():
-
-    pass
+    logger.info(f"现在是 {datetime.datetime.today()}, 开始增量更新 calendars 数据")
+    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始增量更新 calendars 数据")
+    try:
+        inc_update()
+    except Exception:
+        sentry.captureException(exc_info=True)
 
 
 def calendars_detection():
-
-    pass
+    logger.info(f"现在是 {datetime.datetime.today()}, 开始检测拉取更新 calendars 数据")
+    try:
+        # detection()
+        pass
+    except Exception:
+        sentry.captureException(exc_info=True)
 
 
 def finance_update():

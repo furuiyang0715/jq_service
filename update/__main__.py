@@ -3,17 +3,19 @@ import time
 import logging.config
 import schedule
 
-from update.run import index_update, finance_update
+from update.run import index_update, finance_update, calendars_inc
 
 
 def run():
     # 生产者
     # schedule.every(3).seconds.do(index_update)
-    schedule.every(3).seconds.do(finance_update)
+    # schedule.every(3).seconds.do(finance_update)
+    schedule.every(3).seconds.do(calendars_inc)
 
     # 开始调度任务之前执行第一次
     # index_update()
-    finance_update()
+    # finance_update()
+    calendars_inc()
 
     while True:
         # 消费者
@@ -64,6 +66,14 @@ logging.config.dictConfig({
             "when": "D",
             "backupCount": 5
         },
+        "inc_file_log": {
+            "level": "DEBUG",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(os.getcwd(), "logs/calendars/inc.log"),
+            "formatter": "simple",
+            "when": "D",
+            "backupCount": 5
+        },
     },
     "loggers": {
         "main_log": {
@@ -78,6 +88,10 @@ logging.config.dictConfig({
             "level": "DEBUG",
             "handlers": ["console", "finance_file_log"]
         },
+        "inc_log": {
+            "level": "DEBUG",
+            "handlers": ["console", "inc_file_log"]
+        }
     }
 })
 
