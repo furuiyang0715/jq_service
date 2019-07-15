@@ -5,7 +5,7 @@ from update.calendars.gen_delisted_days import gen_delisted_info, gen_delisted_d
 from update.calendars.gen_market_days import gen_sh000001
 from update.calendars.gen_sus_days import gen_inc_code_sus
 
-logger = logging.getLogger("detection")
+logger = logging.getLogger("detection_log")
 MARKET_LIMIT_DATE = datetime.datetime(2020, 1, 1)
 error_code = list()
 
@@ -153,6 +153,7 @@ def check_market_calendar(ts):
 
 
 def task():
+    logger.info("---calendars into---")
     ts2 = datetime.datetime.now()
     # 将每次的检测时间回溯到近两天
     ts1 = ts2 - datetime.timedelta(days=2)

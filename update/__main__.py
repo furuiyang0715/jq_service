@@ -9,20 +9,26 @@ from update.run import index_update, finance_update, calendars_inc, calendars_de
 def run():
     # 生产者
 
-    schedule.every(30).days.do(index_update)
-    schedule.every(5).days.do(finance_update)
-    schedule.every().day.at("2:00").do(calendars_inc)
-    schedule.every(5).minutes.do(calendars_detection)
+    # print("into")
+
+    # schedule.every(30).days.do(index_update)
+    # schedule.every(5).days.do(finance_update)
+    # schedule.every().day.at("02:00").do(calendars_inc)
+    schedule.every().minute.do(calendars_detection)
 
     # 开始调度任务之前执行第一次
-    index_update()
-    finance_update()
-    calendars_inc()
-    calendars_detection()
+    # index_update()
+    # finance_update()
+    # calendars_inc()
+    # calendars_detection()
 
     while True:
         # 消费者
+        # print("1------>", time.time())
+        # print(schedule.jobs)
+        logger.info(schedule.jobs)
         schedule.run_pending()
+        # print("2------>", time.time())
         time.sleep(300)
 
 
@@ -46,7 +52,8 @@ logging.config.dictConfig({
         "main_file_log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(os.getcwd(), "logs/main.log"),
+            "filename": os.path.join(os.getcwd(), "update/logs/main.log"),
+            # "filename": "./logs/main.log",
             "formatter": "simple",
             "when": "D",
             "backupCount": 5
@@ -55,7 +62,8 @@ logging.config.dictConfig({
         "index_file_log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(os.getcwd(), "logs/index/index.log"),
+            "filename": os.path.join(os.getcwd(), "update/logs/index/index.log"),
+            # "filename": "./logs/index/index.log",
             "formatter": "simple",
             "when": "D",
             "backupCount": 5
@@ -64,7 +72,8 @@ logging.config.dictConfig({
         "finance_file_log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(os.getcwd(), "logs/finance/finance.log"),
+            "filename": os.path.join(os.getcwd(), "update/logs/finance/finance.log"),
+            # "filename": "./logs/finance/finance.log",
             "formatter": "simple",
             "when": "D",
             "backupCount": 5
@@ -72,7 +81,8 @@ logging.config.dictConfig({
         "inc_file_log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(os.getcwd(), "logs/calendars/inc.log"),
+            "filename": os.path.join(os.getcwd(), "update/logs/calendars/inc.log"),
+            # "filename": "./logs/calendars/inc.log",
             "formatter": "simple",
             "when": "D",
             "backupCount": 5
@@ -80,11 +90,12 @@ logging.config.dictConfig({
         "detection_file_log": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": os.path.join(os.getcwd(), "logs/calendars/detection.log"),
+            "filename": os.path.join(os.getcwd(), "update/logs/calendars/detection.log"),
+            # "filename": "./logs/calendars/detection.log",
             "formatter": "simple",
             "when": "D",
             "backupCount": 5
-        }
+        },
     },
     "loggers": {
         "main_log": {
@@ -114,4 +125,5 @@ logging.config.dictConfig({
 logger = logging.getLogger("main_log")
 
 
-run()
+# run()
+# print(os.getcwd())

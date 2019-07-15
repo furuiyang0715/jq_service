@@ -169,11 +169,11 @@ class BaseFinanceSync:
 
     def daily_sync(self):
 
-        import time
-        while True:
-            logger.info("正在更新金融数据")
-            time.sleep(3)
-        sys.exit(0)
+        # import time
+        # while True:
+        #     logger.info("正在更新金融数据")
+        #     time.sleep(3)
+        # sys.exit(0)
 
 
         conn = utils.DC()

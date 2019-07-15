@@ -125,12 +125,12 @@ class IndexSync:
 
     def daily_sync(self):
 
-        import time
-        while True:
-            logger.info("正在更新指数数据")
-            time.sleep(3)
-        import sys
-        sys.exit(0)
+        # import time
+        # while True:
+        #     logger.info("正在更新指数数据")
+        #     time.sleep(3)
+        # import sys
+        # sys.exit(0)
 
         mysql_con = DC()
         coll = gen_index_coll()

@@ -24,8 +24,8 @@ def calendars_inc():
 def calendars_detection():
     logger.info(f"现在是 {datetime.datetime.today()}, 开始检测拉取更新 calendars 数据")
     try:
+        # logger.info("hahahahahh")
         task()
-        pass
     except Exception:
         sentry.captureException(exc_info=True)
 
@@ -46,3 +46,8 @@ def index_update():
         IndexSync().daily_sync()
     except Exception:
         sentry.captureException(exc_info=True)
+
+
+# if __name__ == "__main__":
+#     import os
+#     print(os.getcwd())
