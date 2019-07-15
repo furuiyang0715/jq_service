@@ -23,8 +23,16 @@ def log_method_time_usage(func):
 
 
 def gen_diff(market_start, end, timestamp):
+    """
+
+    :param market_start:
+    :param end:
+    :param timestamp:
+    :return:
+    """
     market_sus = gen_sh000001(market_start, end, timestamp)
-    for code in all_codes:
+    # for code in all_codes:
+    for code in ["300576"]:
         start = None
         # start = utils.gen_last_mongo_date(code)
         if not start:
@@ -35,6 +43,9 @@ def gen_diff(market_start, end, timestamp):
         if not sus:
             sus = []
         single_sus = set(market_sus + sus + delisted) - set(market_sus)
+
+        logger.info(f"code: {code}")
+        logger.info(f"single_sus: {single_sus}")
 
         yield code, single_sus
 
@@ -83,8 +94,9 @@ def check_mongo_diff(code, single_sus, ALREADYCHECK=False, DEL=False):
         f_code = utils.code_convert(code)
         cursor = coll.find({"code": f_code, "ok": False}, {"date": 1, "_id": 0})
         already_sus = [r.get("date") for r in cursor]
+        logger.info(f"already_sus :{already_sus}")
         add_sus = set(single_sus) - set(already_sus)  # 需要插入的
-        # logger.info(f"需要新插入的数据: {add_sus} \n 插入数量是： {len(add_sus)}")
+        logger.info(f"需要新插入的数据: {add_sus} \n 插入数量是： {len(add_sus)}")
     else:
         add_sus = single_sus
 
@@ -100,6 +112,9 @@ def inc():
     end_time = utils.gen_limit_date()
     timestamp = datetime.datetime.now()
     market_start = utils.market_first_day()
+    logger.info(f" market_start: {market_start}")
+    logger.info(f" end_time: {end_time}")
+    logger.info(f" timestamp: {timestamp}")
 
     for code, single_sus in gen_diff(market_start, end_time, timestamp):
         add_sus, del_sus = check_mongo_diff(code, single_sus, ALREADYCHECK=True, DEL=True)
