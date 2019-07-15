@@ -3,24 +3,27 @@ import time
 import logging.config
 import schedule
 
-from update.run import index_update, finance_update, calendars_inc
+from update.run import index_update, finance_update, calendars_inc, calendars_detection
 
 
 def run():
     # 生产者
-    # schedule.every(3).seconds.do(index_update)
-    # schedule.every(3).seconds.do(finance_update)
-    schedule.every(3).seconds.do(calendars_inc)
+
+    schedule.every(30).days.do(index_update)
+    schedule.every(5).days.do(finance_update)
+    schedule.every().day.at("2:00").do(calendars_inc)
+    schedule.every(5).minutes.do(calendars_detection)
 
     # 开始调度任务之前执行第一次
-    # index_update()
-    # finance_update()
+    index_update()
+    finance_update()
     calendars_inc()
+    calendars_detection()
 
     while True:
         # 消费者
         schedule.run_pending()
-        time.sleep(10)
+        time.sleep(300)
 
 
 # 模块日志配置
