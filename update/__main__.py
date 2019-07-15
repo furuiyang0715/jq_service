@@ -33,7 +33,7 @@ def run():
         # 消费者
         logger.info(schedule.jobs)
         schedule.run_pending()
-        time.sleep(30)
+        time.sleep(3)
 
 
 # 模块日志配置

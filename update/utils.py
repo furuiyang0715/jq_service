@@ -1,4 +1,5 @@
 import datetime
+import functools
 import sys
 
 import pymongo
@@ -8,12 +9,13 @@ import pymysql
 
 import logging
 
+import schedule
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
 from update.sconfig import (MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB,
                             MONGO_DB2, MONGO_DB1, MONGO_COLL_CALENDARS, MONGO_COLL_INDEX, MONGO_URL_STOCK,
-                            MONGO_URL_JQData)
+                            MONGO_URL_JQData, SENTRY_DSN)
 
 import re
 from update.calendars import all_codes
@@ -21,7 +23,8 @@ from raven import Client
 
 logger = logging.getLogger()
 
-sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
+sentry = Client(SENTRY_DSN)
+# sentry = Client("https://330e494ccd22497db605a102491c0423@sentry.io/1501024")
 
 
 stock_format = [r'^[SI][ZHX]\d{6}$',
@@ -353,3 +356,21 @@ def bulk_insert(cld, code, suspended, start, end):
     except Exception as e:
 
         logger.info(f"批量插入失败 {code}, 原因是 {e}")
+
+
+def catch_exceptions(cancel_on_failure=False):
+    def catch_exceptions_decorator(job_func):
+        @functools.wraps(job_func)
+        def wrapper(*args, **kwargs):
+            try:
+                return job_func(*args, **kwargs)
+            except:
+                import traceback
+                logger.warning(traceback.format_exc())
+                sentry.captureException(exc_info=True)
+                if cancel_on_failure:
+                    # print(schedule.CancelJob)
+                    # schedule.cancel_job()
+                    return schedule.CancelJob
+        return wrapper
+    return catch_exceptions_decorator
