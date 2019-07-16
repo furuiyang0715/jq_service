@@ -17,7 +17,7 @@ def calendars_check():
 
 @catch_exceptions(cancel_on_failure=True)
 def calendars_detection():
-    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始拉取 calendars 数据")
+    # sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始拉取 calendars 数据")
     logger.info(f"现在是 {datetime.datetime.today()}, 开始拉取 calendars 数据")
     task()
 
