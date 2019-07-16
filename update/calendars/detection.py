@@ -153,7 +153,7 @@ def check_market_calendar(ts):
 
 
 def task():
-    logger.info("---calendars into---")
+    logger.info("---calendars detection into---")
     ts2 = datetime.datetime.now()
     # 将每次的检测时间回溯到近两天
     ts1 = ts2 - datetime.timedelta(days=2)

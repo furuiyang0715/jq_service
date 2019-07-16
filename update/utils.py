@@ -237,24 +237,6 @@ def gen_sync_codes():
     return codes
 
 
-def gen_last_mongo_date(code=None):
-    # 取出上次同步数据的最后一天 用于增量更新
-    # 不同于 calendar 的逻辑 这时候上一次同步的最后时间已经不是最后一个数据了（因为 calendars 只是插入停牌数据）
-    # 取出一个所有数据中最大的时间作为上一次时间 还是保持原样 多查询几次 Emmm This is a problem ...
-    # 或者就是找个地方记录下数据 但是我觉得还是尽量不使用记录表比较好
-    coll = gen_calendars_coll()
-    if code:
-        f_code = code_convert(code)
-        cursor = coll.find({"code": f_code}, {"date": 1}).sort([("date", pymongo.DESCENDING)]).limit(1)
-    else:
-        cursor = coll.find({}, {"date": 1}).sort([('date', pymongo.DESCENDING)]).limit(1)
-    try:
-        date = cursor.next().get("date")
-    except:
-        date = None
-    return date
-
-
 def gen_finance_sync_tables():
     """
     生成需要同步的金融数据表
@@ -270,33 +252,6 @@ def gen_finance_sync_tables():
         "comcn_dividend",  # 分红
         "comcn_sharestru",  # 股本
     ]
-
-
-# def yyyymmdd_date(dt: datetime) -> int:
-#     return dt.year * 10 ** 4 + dt.month * 10 ** 2 + dt.day
-# def code_convert(code):
-#     if code[0] == "0" or code[0] == "3":
-#         return "SZ" + code
-#     elif code[0] == "6":
-#         return "SH" + code
-#     else:
-#         logger.warning(f"wrong code: {code}")
-#         sys.exit(1)
-
-
-def inc_insert(code, day, ok):
-    # MongoUri = myconfig.get("MONGO_URL", "mongodb://172.17.0.1:27017")
-    # db = pymongo.MongoClient(MongoUri)
-    #
-    # coll_name = myconfig.get("MONGO_DBNAME", "stock")
-    # cld = db[coll_name]["calendar"]
-
-    cld = gen_calendars_coll()
-    data = {"code": code_convert(code),
-            "date": day,
-            "date_int": yyyymmdd_date(day),
-            "ok": ok}
-    cld.insert_one(data)
 
 
 def bulk_insert(cld, code, suspended, start, end):

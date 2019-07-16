@@ -3,40 +3,29 @@ import threading
 import time
 import logging.config
 import schedule
-
-from update.calendars.hotfix import hot_inc
-from update.run import index_update, finance_update, calendars_inc, calendars_detection
+from update.run import index_update, finance_update, calendars_detection, calendars_check
 
 
 def run_threaded(job_func):
-    """确保任务能在线程中运行完毕"""
     job_thread = threading.Thread(target=job_func)
     job_thread.start()
 
 
 def run():
-    # 生产者
     schedule.every(30).days.do(run_threaded, index_update)
     schedule.every(5).days.do(run_threaded, finance_update)
-    schedule.every().day.at("02:00").do(run_threaded, calendars_inc)
-    schedule.every(3).seconds.do(run_threaded, calendars_detection)
+    schedule.every().day.at("02:00").do(run_threaded, calendars_check)
+    # FIXME 在 2：00 - 3：00 之间不执行
+    schedule.every(5).minutes.do(run_threaded, calendars_detection)
 
-    # 开始调度任务之前执行第一次
-    index_update()
-    finance_update()
-    calendars_inc()
-
-    # 在执行之前进行热修复
-    hot_inc()
+    calendars_check()
 
     while True:
-        # 消费者
         logger.info(schedule.jobs)
         schedule.run_pending()
-        time.sleep(3)
+        time.sleep(300)
 
 
-# 模块日志配置
 logging.config.dictConfig({
     "version": 1,
     "disable_existing_loggers": True,
