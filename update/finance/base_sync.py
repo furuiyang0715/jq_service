@@ -175,7 +175,6 @@ class BaseFinanceSync:
         #     time.sleep(3)
         # sys.exit(0)
 
-
         conn = utils.DC()
         sync_tables = utils.gen_finance_sync_tables()
         cur_ids = self.gen_sql_max_id(conn, sync_tables)

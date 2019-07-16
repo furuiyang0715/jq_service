@@ -1,28 +1,24 @@
 import datetime
 import logging
+from update.calendars.check_data import check
 from update.calendars.detection import task
-from update.calendars.inc_sync import inc_update
 from update.finance.base_sync import BaseFinanceSync
 from update.index.index_sync import IndexSync
 from update.utils import sentry, catch_exceptions
-
 logger = logging.getLogger("main_log")
 
 
 @catch_exceptions(cancel_on_failure=True)
-def calendars_inc():
-    logger.info(f"现在是 {datetime.datetime.today()}, 开始增量更新 calendars 数据")
-    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始增量更新 calendars 数据")
-    inc_update()
-    # try:
-    #     inc_update()
-    # except Exception:
-    #     sentry.captureException(exc_info=True)
+def calendars_check():
+    logger.info(f"现在是 {datetime.datetime.today()}, 开始增量 calendars 数据")
+    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始增量 calendars 数据")
+    check()
 
 
 @catch_exceptions(cancel_on_failure=True)
 def calendars_detection():
-    logger.info(f"现在是 {datetime.datetime.today()}, 开始检测拉取更新 calendars 数据")
+    sentry.captureMessage(f"现在是 {datetime.datetime.today()}, 开始拉取 calendars 数据")
+    logger.info(f"现在是 {datetime.datetime.today()}, 开始拉取 calendars 数据")
     task()
 
 

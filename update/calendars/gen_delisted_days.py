@@ -1,9 +1,7 @@
 import datetime
 import logging
-
 from update import utils
 from update.utils import DC
-
 logger = logging.getLogger()
 
 

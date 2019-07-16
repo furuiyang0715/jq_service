@@ -1,9 +1,7 @@
 import logging
 import sys
-
 from update import utils
 from update.utils import DC
-
 logger = logging.getLogger()
 
 
