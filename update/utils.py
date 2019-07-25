@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 
 from update.sconfig import (MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB,
                             MONGO_DB2, MONGO_DB1, MONGO_COLL_CALENDARS, MONGO_COLL_INDEX, MONGO_URL_STOCK,
-                            MONGO_URL_JQData, SENTRY_DSN)
+                            MONGO_URL_JQData, SENTRY_DSN, MONGO_COLL_INDEX_NEW)
 
 import re
 from update.calendars import all_codes
@@ -58,6 +58,30 @@ def convert_8code(code):
         print("股票格式错误 ~")
 
     return code
+
+
+EXCHANGE_DICT = {
+    "XSHG": "SH",
+    "XSHE": "SZ",
+    "XSGE": "SF",
+    "XDCE": "DF",
+    "XZCE": "ZF",
+    "CCFX": "CF",
+    "XINE": "IF",
+}
+CON_EXCHANGE_DICT = {value: key for key, value in EXCHANGE_DICT.items()}
+
+
+def convert_11code(code):
+    """
+    将SH600000 格式的股票代码转化为600000.XSHG
+    :param code: 股票代码
+    :return:
+    """
+    market = code[:2]
+    code = code[2:]
+    exchange = CON_EXCHANGE_DICT.get(market)
+    return '.'.join((code, exchange))
 
 
 def end_code_map():
@@ -140,6 +164,10 @@ def gen_index_coll():
     :return:
     """
     return MongoClient(MONGO_URL_JQData)[MONGO_DB1][MONGO_COLL_INDEX]
+
+
+def gen_index_new_coll():
+    return MongoClient(MONGO_URL_JQData)[MONGO_DB1][MONGO_COLL_INDEX_NEW]
 
 
 def gen_finance_DB():
